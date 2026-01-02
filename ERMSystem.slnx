@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="ERMSystem/ERMSystem.vcxproj" Id="a38cf539-8067-4e49-bc95-605ccc27322a" />
+</Solution>
