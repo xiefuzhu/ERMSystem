@@ -5,8 +5,8 @@ int init_db();
 void close_db();
 int sort_students(int sort_type);
 int delete_student_by_stuId(const char* stuId);
-int query_student_by_stuId(const char* stuId);
 int query_callback(void* data, int argc, char** argv, char** azColName);
+int query_student_by_stuId(const char* stuId);
 int insert_student(
 	 const char* stuId
 	,const char* name

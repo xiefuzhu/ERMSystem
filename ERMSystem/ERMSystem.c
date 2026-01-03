@@ -4,11 +4,12 @@
 #include <string.h>
 #include "sqlite3.h"
 
-
+int num = 1;
+int totalnum=1;
 void menu() {
     //cszyy
     int choice;
-    int sit = 1;
+
 loop:
     while (1) {
         system("cls");
@@ -22,84 +23,10 @@ loop:
         printf("\n提示:请输入数字序号选择对应的操作！\n");
         scanf("%d", &choice);
         while (getchar() != '\n');
-
         switch (choice) {
         case 1:
             system("cls");
-            printf("考生信息录入\n");
-            char stuId[50] = { 0 };
-            char name[50] = { 0 };
-            char gender[20] = { 0 };
-            char identify[50] = { 0 };
-            char major[50] = { 0 };
-            char teleNumber[50] = { 0 };
-            char sit[3] = { 0 };
-            char age[20] = { 0 };
-            char stuId_2[3] = { 0 };
-            char classNum[3] = { 0 };
-            char examId[50] = { 0 };
-
-            printf("请输入考生学号：");
-            scanf("%s", stuId);
-            while (getchar() != '\n');
-
-            printf("请输入考生姓名：");
-            scanf("%s", name);
-            while (getchar() != '\n');
-
-            printf("请输入考生性别：");
-            scanf("%s", gender);
-            while (getchar() != '\n');
-
-            printf("请输入考生身份证号：");
-            scanf("%s", identify);
-            while (getchar() != '\n');
-
-            printf("请输入考生专业：");
-            scanf("%s", major);
-            while (getchar() != '\n');
-
-            printf("请输入考生联系电话：");
-            scanf("%s", teleNumber);
-            while (getchar() != '\n');
-
-            //printf("请输入考生考场号：");
-            //scanf("%s", sit);
-            //while (getchar() != '\n');
-
-            printf("请输入考生年龄：");
-            scanf("%s", age);
-            while (getchar() != '\n');
-
-            //scanf("%s", stuId_2);学生号前两位
-            //while (getchar() != '\n');
-
-            //printf("请输入考生准考证号：");
-            //scanf("%s", examId);
-            //while (getchar() != '\n');
-            stuId_2[0] = stuId[0];
-            stuId_2[1] = stuId[1];
-            if (sit <= 9) {
-                classNum[0] = '0';
-                classNum[1] = (char)(sit + 48);
-            }
-
-            int ret = insert_student(stuId, name, gender, identify, major,
-                teleNumber, sit, age, stuId_2, examId);
-
-            // 插入结果提示
-            if (!ret) {
-                printf("考生信息录入成功！\n");
-                sit++;
-            }
-            else {
-                printf("考生信息录入失败！\n");
-            }
-
-            // 等待用户确认后返回菜单
-            printf("按回车键返回主菜单...");
-            getchar();
-        
+            lu();
 
             break;
         case 2:
@@ -131,8 +58,7 @@ loop:
                 if (choice2 == 1) {
                     system("cls");
                     inputYes = 1;
-                    printf("按考生学号进行升序排序");
-                    sort_students(1);
+                    printf("按考生学号进行升序排序\n");
                     //hanshu
                     sort_students(1);
                     printf("\n按回车键返回主菜单");
@@ -145,7 +71,7 @@ loop:
                 else if (choice2 == 2) {
                     system("cls");
                     inputYes = 1;
-                    printf("按考生准考证号进行升序排序");
+                    printf("按考生准考证号进行升序排序\n");
                     //hanshu
                     sort_students(2);
                     printf("\n按回车键返回主菜单");
@@ -159,7 +85,7 @@ loop:
                 else if (choice2 == 3) {
                     system("cls");
                     inputYes = 1;
-                    printf("按考生年龄升序排序");
+                    printf("按考生年龄升序排序\n");
                     //hanshu
                     sort_students(3);
                     printf("\n按回车键返回主菜单");
@@ -201,4 +127,98 @@ int main() {
     }
     menu();
     return 0;
+}
+int lu() {
+    printf("考生信息录入\n");
+    char stuId[50] = { 0 };
+    char name[50] = { 0 };
+    char gender[20] = { 0 };
+    char identify[50] = { 0 };
+    char major[50] = { 0 };
+    char teleNumber[50] = { 0 };
+    char sit[3] = { 0 };
+    char age[20] = { 0 };
+    char stuId_2[3] = { 0 };
+    char classNum[3] = { 0 };
+    char examId[50] = { 0 };
+
+    printf("请输入考生学号：");
+    scanf("%s", stuId);
+    while (getchar() != '\n');
+
+    printf("请输入考生姓名：");
+    scanf("%s", name);
+    while (getchar() != '\n');
+
+    printf("请输入考生性别：");
+    scanf("%s", gender);
+    while (getchar() != '\n');
+
+    printf("请输入考生身份证号：");
+    scanf("%s", identify);
+    while (getchar() != '\n');
+
+    printf("请输入考生专业：");
+    scanf("%s", major);
+    while (getchar() != '\n');
+
+    printf("请输入考生联系电话：");
+    scanf("%s", teleNumber);
+    while (getchar() != '\n');
+
+    //printf("请输入考生考场号：");
+    //scanf("%s", sit);
+    //while (getchar() != '\n');
+    if (num < 10) {
+        sit[0] = '0';
+        sit[1] = (char)(num + 48);  
+        sit[2] = '\0';              
+    }
+    else {
+        sit[0] = (char)((num / 10) + 48);  // 十
+        sit[1] = (char)((num % 10) + 48);  // 个
+        sit[2] = '\0';                     
+    }
+
+    printf("请输入考生年龄：");
+    scanf("%s", age);
+    while (getchar() != '\n');
+
+    //scanf("%s", stuId_2);学生号前两位
+    //while (getchar() != '\n');
+
+    //printf("请输入考生准考证号：");
+    //scanf("%s", examId);
+    //while (getchar() != '\n');
+    stuId_2[0] = stuId[0];
+    stuId_2[1] = stuId[1];
+    examId[0] = '0';
+    examId[1] = (char)((totalnum / 40) + 49);
+    examId[2] = '0';
+    examId[3] = '1';
+    examId[4] = stuId[0];
+    examId[5] = stuId[1];
+    examId[6] = sit[0];
+    examId[7] = sit[1];
+    examId[8] = '\0';
+
+
+
+    int ret = insert_student(stuId, name, gender, identify, major,
+        teleNumber, sit, age, stuId_2, examId);
+
+    // 插入结果提示
+    if (!ret) {
+        printf("考生信息录入成功！\n是否继续录入?输入回车继续录入,输入0返回上一级");
+        num++;
+        totalnum++;
+    }
+    else {
+        printf("考生信息录入失败！\n");
+    }
+
+    // 等待用户确认后返回菜单
+    printf("按回车键返回主菜单...");
+    if(getchar()=='\n') lu();
+
 }

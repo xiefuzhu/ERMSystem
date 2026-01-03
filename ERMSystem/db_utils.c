@@ -1,4 +1,4 @@
-﻿#define _CRT_SECURE_NO_WARINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include "db_utils.h"
 #include<stdint.h>
 #include <stdio.h>
@@ -17,17 +17,17 @@ int init_db() {
     }
     // 创建学生表：id(主键),学号,姓名,性别,身份证,专业,手机号,座位号,学号前两位,准考证号
     const char* create_sql = "CREATE TABLE IF NOT EXISTS student ("
-        "id INTEGER PRIMARY KEY AUTOINCREMENT,"//暂时不管他
-        "stuId TEXT UNIQUE NOT NULL,"
-        "name TEXT NOT NULL,"
-        "gender TEXT,"//排查10分钟😡
-        "identify TEXT,"
-        "major TEXT,"
-        "teleNumber TEXT,"
-        "sit TEXT,"
-        "age TEXT,"
-        "stuId_2 TEXT,"
-        "examId TEXT"
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "`学号` TEXT UNIQUE NOT NULL,"
+        "`名字` TEXT NOT NULL,"
+        "`性别` TEXT,"//排查10分钟😡
+        "`身份证` TEXT,"
+        "`专业` TEXT,"
+        "`电话` TEXT,"
+        "`座位号` TEXT,"
+        "`年龄` TEXT,"
+        "stuId TEXT,"
+        "`准考证` TEXT"
         ");";
     ret = sqlite3_exec(db, create_sql, NULL, 0, &err_msg);
     if (ret != SQLITE_OK) {
@@ -40,7 +40,7 @@ int init_db() {
     return 0;
 }
 int insert_student(
-      const char* stuId
+    const char* stuId
     , const char* name
     , const char* gender
     , const char* identify
@@ -55,39 +55,36 @@ int insert_student(
         return -1;
     }
 
-    // 拼接插入SQL（使用参数绑定避免SQL注入，更安全）
     char insert_sql[1024] = { 0 };
     snprintf(insert_sql, sizeof(insert_sql),
-        "INSERT INTO student (stuId, name, gender, identify, major, teleNumber, sit , age , stuId_2, examId) "
+        "INSERT INTO student (`学号`, `名字`, `性别`, `身份证`, `专业`, `电话`, `座位号`, `年龄`, stuId, `准考证`) "
         "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');",
-        stuId, name, gender, identify, major, teleNumber, sit, stuId_2, examId);
+        stuId, name, gender, identify, major, teleNumber, sit, age, stuId_2, examId);
 
     int ret;
     char* err_msg = NULL;
     ret = sqlite3_exec(db, insert_sql, NULL, 0, &err_msg);
     if (ret != SQLITE_OK) {
-        printf("插入学生信息失败: %s\n", err_msg);
+        printf("添加学生信息失败: %s\n", err_msg);
         sqlite3_free(err_msg);
         return -1;
     }
 
-    printf("学生信息插入成功！\n");
+    printf("学生信息添加成功！\n");
     return 0;
 }
-static int query_callback(void* data, int argc, char** argv, char** azColName) {
-    // 打印一行查询结果
-    printf("-------------------------\n");
-    for (int i = 0; i < argc; i++) {
-        printf("%s: %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-    }
-    printf("-------------------------\n");
-    return 0;
-}
-static int callback_get_stuId2(void* data, int argc, char** argv, char** azColName) {
-    // data是传入的stuId_2数组，将查询到的stuId_2值复制进去
-    char* stuId_2 = (char*)data;
-    if (argv[0] != NULL) {
-        strncpy(stuId_2, argv[0], 2); // 只取前两位（假设stuId_2是2位）
+//static int callback_get_stuId2(void* data, int argc, char** argv, char** azColName) {
+//    // data是传入的stuId_2数组，将查询到的stuId_2值复制进去
+//    char* stuId_2 = (char*)data;
+//    if (argv[0] != NULL) {
+//        strncpy(stuId_2, argv[0], 2); // 只取前两位
+//    }
+//    return 0;
+//}
+
+int query_callback(void* data, int argc, char** argv, char** azColName) {
+    for (int i = 1; i < argc; i++) {
+        printf("%s: %s ", azColName[i], argv[i] ? argv[i] : "NULL");
     }
     return 0;
 }
@@ -120,7 +117,7 @@ int query_student_by_stuId(const char* stuId) {
 
     char query_sql[256] = { 0 };
     snprintf(query_sql, sizeof(query_sql),
-        "SELECT * FROM student WHERE stuId = '%s';", stuId);
+        "SELECT * FROM student WHERE `学号` = '%s';", stuId);
 
     int ret;
     char* err_msg = NULL;
@@ -142,7 +139,7 @@ int delete_student_by_stuId(const char* stuId) {
 
     char delete_sql[256] = { 0 };
     snprintf(delete_sql, sizeof(delete_sql),
-        "DELETE FROM student WHERE stuId = '%s';", stuId);
+        "DELETE FROM student WHERE `学号` = '%s';", stuId);
 
     int ret;
     char* err_msg = NULL;
@@ -153,7 +150,6 @@ int delete_student_by_stuId(const char* stuId) {
         return -1;
     }
 
-    // 检查是否有行被删除
     int changes = sqlite3_changes(db);
     if (changes == 0) {
         printf("未找到学号为%s的学生，无数据删除\n", stuId);
@@ -163,6 +159,7 @@ int delete_student_by_stuId(const char* stuId) {
     printf("学生信息删除成功！\n");
     return 0;
 }
+
 int update_student_info(const char* stuId, const char* new_col, const char* new_val) {
     if (db == NULL) return -1;
     char update_sql[256] = {0};
@@ -190,13 +187,13 @@ int sort_students(int sort_type) {
     char sort_sql[1024] = { 0 };
     switch (sort_type) {
     case 1:
-        snprintf(sort_sql, sizeof(sort_sql), "SELECT * FROM student ORDER BY stuId ASC;");
+        snprintf(sort_sql, sizeof(sort_sql), "SELECT * FROM student ORDER BY `学号` ASC;");
         break;
     case 2:
-        snprintf(sort_sql, sizeof(sort_sql), "SELECT * FROM student ORDER BY examId ASC;");
+        snprintf(sort_sql, sizeof(sort_sql), "SELECT * FROM student ORDER BY `准考证` ASC;");
         break;
     case 3:
-        snprintf(sort_sql, sizeof(sort_sql), "SELECT * FROM student ORDER BY age ASC;");
+        snprintf(sort_sql, sizeof(sort_sql), "SELECT * FROM student ORDER BY `年龄` ASC;");
         break;
         return -1;
     }
@@ -213,7 +210,6 @@ int sort_students(int sort_type) {
     printf("排序查询完成！\n");
     return 0;
 }
-
 //int assign_exam_id(const char* stuId) {
 //    if (db == NULL) {
 //        printf("数据库未初始化！\n");
